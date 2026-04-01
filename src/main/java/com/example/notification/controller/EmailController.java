@@ -1,5 +1,6 @@
 package com.example.notification.controller;
 
+import com.example.notification.dtos.request.FranchiseRegisterEmailRequestDTO;
 import com.example.notification.dtos.request.PlayerSoldEmailRequestDTO;
 import com.example.notification.dtos.request.TournamentWelcomeEmailRequestDTO;
 import com.example.notification.dtos.response.EmailResponseDto;
@@ -33,4 +34,12 @@ public class EmailController {
         EmailResponseDto emailResponseDto = emailService.sendTournamentWelcomeEmail(request);
         return ResponseEntity.ok(ApiResponse.success(emailResponseDto,"welcome mail sent"));
     }
+
+    @PostMapping("/franchise-register")
+    public ResponseEntity<ApiResponse<EmailResponseDto>> sendFranchiseRegisterEmail(
+            @RequestBody @Valid FranchiseRegisterEmailRequestDTO request) {
+        EmailResponseDto emailResponseDto = emailService.sendFranchiseRegisterEmail(request);
+        return ResponseEntity.ok(ApiResponse.success(emailResponseDto, "Franchise mail sent"));
+    }
+
 }
