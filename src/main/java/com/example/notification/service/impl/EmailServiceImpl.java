@@ -1,12 +1,15 @@
 package com.example.notification.service.impl;
 
+import com.example.notification.dtos.request.FranchiseRegisterEmailRequestDTO;
 import com.example.notification.dtos.request.PlayerSoldEmailRequestDTO;
 import com.example.notification.dtos.request.TournamentWelcomeEmailRequestDTO;
 import com.example.notification.dtos.response.EmailResponseDto;
+
 import com.example.notification.entities.EmailTemplate;
 import com.example.notification.enums.EmailStatus;
 import com.example.notification.enums.EmailTemplateType;
 import com.example.notification.repository.EmailTemplateRepository;
+
 import com.example.notification.service.EmailService;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +20,9 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
-public class EmailServiceImpl implements EmailService {
+public class EmailServiceImpl implements EmailService{
 
     private final JavaMailSender mailSender;
     private final EmailTemplateRepository templateRepository;
@@ -72,6 +74,30 @@ public class EmailServiceImpl implements EmailService {
                 .message("Player welcome email sent successfully")
                 .sentAt(LocalDateTime.now())
                 .build();
+    }
+
+    @Override
+    public EmailResponseDto sendFranchiseRegisterEmail(FranchiseRegisterEmailRequestDTO request){
+        EmailTemplate template = templateRepository
+                .findByType(EmailTemplateType.FRANCHISE_REGISTER)
+                .orElseThrow(()-> new RuntimeException("Template not found"));
+
+        Context context = new Context();
+        context.setVariable("franchiseName", request.getFranchiseName());
+        context.setVariable("country", request.getCountry());
+        context.setVariable("city", request.getCity());
+        context.setVariable("franchiseEmail", request.getFranchiseEmail());
+
+        String html = templateEngine.process(template.getBody(), context);
+
+        sendHtmlMail(request.getFranchiseEmail(), template.getSubject(), html);
+        return EmailResponseDto.builder()
+                .status(EmailStatus.SENT)
+                .message("Email Sent to Franchise")
+                .sentAt(LocalDateTime.now())
+                .build();
+
+
     }
 
     private void sendHtmlMail(String to, String subject, String html) {

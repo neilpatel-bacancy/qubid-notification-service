@@ -1,5 +1,6 @@
 package com.example.notification.service;
 
+import com.example.notification.dtos.request.FranchiseRegisterEmailRequestDTO;
 import com.example.notification.dtos.request.PlayerSoldEmailRequestDTO;
 import com.example.notification.dtos.request.TournamentWelcomeEmailRequestDTO;
 import com.example.notification.dtos.response.EmailResponseDto;
@@ -7,4 +8,5 @@ import com.example.notification.dtos.response.EmailResponseDto;
 public interface EmailService {
     EmailResponseDto sendPlayerSoldEmail(PlayerSoldEmailRequestDTO request);
     EmailResponseDto sendTournamentWelcomeEmail(TournamentWelcomeEmailRequestDTO request);
+    EmailResponseDto sendFranchiseRegisterEmail(FranchiseRegisterEmailRequestDTO request);
 }
